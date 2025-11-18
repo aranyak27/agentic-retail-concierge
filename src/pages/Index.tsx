@@ -53,7 +53,7 @@ const Index = () => {
 
           {/* Persona Selection */}
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="p-8 hover:shadow-medium transition-all hover:-translate-y-1 cursor-pointer group" onClick={() => navigate('/auth?role=shopper')}>
+            <Card className="p-8 hover:shadow-medium transition-all hover:-translate-y-1 cursor-pointer group" onClick={() => navigate('/shopper')}>
               <ShoppingBag className="h-16 w-16 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
               <h2 className="text-2xl font-bold mb-3">I'm a Shopper</h2>
               <p className="text-muted-foreground mb-6">
@@ -64,7 +64,7 @@ const Index = () => {
               </Button>
             </Card>
 
-            <Card className="p-8 hover:shadow-medium transition-all hover:-translate-y-1 cursor-pointer group" onClick={() => navigate('/auth?role=ops_manager')}>
+            <Card className="p-8 hover:shadow-medium transition-all hover:-translate-y-1 cursor-pointer group" onClick={() => navigate('/ops')}>
               <BarChart3 className="h-16 w-16 text-secondary mx-auto mb-4 group-hover:scale-110 transition-transform" />
               <h2 className="text-2xl font-bold mb-3">I'm a Retail Manager</h2>
               <p className="text-muted-foreground mb-6">

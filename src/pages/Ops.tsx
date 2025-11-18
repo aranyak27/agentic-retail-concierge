@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { LogOut, BarChart3, Shield, Gift, BookOpen, Beaker } from "lucide-react";
@@ -12,51 +10,9 @@ import KnowledgeManagement from "@/components/ops/KnowledgeManagement";
 import ExperimentManager from "@/components/ops/ExperimentManager";
 
 const Ops = () => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Check auth status
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate('/auth?role=ops_manager');
-      } else {
-        setUser(session.user);
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/auth?role=ops_manager');
-      } else if (session) {
-        setUser(session.user);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: "Signed out",
-      description: "Session ended successfully.",
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // Demo mode - no authentication required
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,9 +29,9 @@ const Ops = () => {
             </div>
           </div>
           
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
+            Back to Home
           </Button>
         </div>
       </header>

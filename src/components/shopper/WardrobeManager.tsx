@@ -35,20 +35,8 @@ const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
   });
 
   useEffect(() => {
-    fetchWardrobeItems();
+    // Demo mode - no database fetch needed
   }, [userId]);
-
-  const fetchWardrobeItems = async () => {
-    const { data, error } = await supabase
-      .from('wardrobe_items')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setItems(data);
-    }
-  };
 
   const handleAddItem = async () => {
     if (!newItem.name || !newItem.category) {
@@ -60,36 +48,26 @@ const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
       return;
     }
 
-    setLoading(true);
-    const { error } = await supabase.from('wardrobe_items').insert({
+    // Demo mode - just add to local state
+    const newItemWithId = {
+      id: Date.now().toString(),
       user_id: userId,
       ...newItem,
+    };
+    
+    setItems(prev => [newItemWithId, ...prev]);
+    toast({
+      title: "Item added",
+      description: "Successfully added to your wardrobe (demo mode)",
     });
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Item added",
-        description: "Successfully added to your wardrobe",
-      });
-      setNewItem({ name: "", category: "", color: "", season: "" });
-      setOpen(false);
-      fetchWardrobeItems();
-    }
-    setLoading(false);
+    setNewItem({ name: "", category: "", color: "", season: "" });
+    setOpen(false);
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from('wardrobe_items').delete().eq('id', id);
-    if (!error) {
-      toast({ title: "Item removed" });
-      fetchWardrobeItems();
-    }
+    // Demo mode - remove from local state
+    setItems(prev => prev.filter(item => item.id !== id));
+    toast({ title: "Item removed" });
   };
 
   return (
