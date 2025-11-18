@@ -22,7 +22,50 @@ interface WardrobeItem {
 }
 
 const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
-  const [items, setItems] = useState<WardrobeItem[]>([]);
+  const [items, setItems] = useState<WardrobeItem[]>([
+    {
+      id: '1',
+      name: 'Classic White Shirt',
+      category: 'Tops',
+      color: 'White',
+      season: 'All Season'
+    },
+    {
+      id: '2',
+      name: 'Blue Denim Jeans',
+      category: 'Bottoms',
+      color: 'Blue',
+      season: 'All Season'
+    },
+    {
+      id: '3',
+      name: 'Black Blazer',
+      category: 'Outerwear',
+      color: 'Black',
+      season: 'Winter'
+    },
+    {
+      id: '4',
+      name: 'Red Cotton Kurta',
+      category: 'Ethnic',
+      color: 'Red',
+      season: 'Summer'
+    },
+    {
+      id: '5',
+      name: 'Navy Blue T-Shirt',
+      category: 'Tops',
+      color: 'Navy',
+      season: 'Summer'
+    },
+    {
+      id: '6',
+      name: 'Grey Chinos',
+      category: 'Bottoms',
+      color: 'Grey',
+      season: 'All Season'
+    }
+  ]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();

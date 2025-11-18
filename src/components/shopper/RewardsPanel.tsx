@@ -9,7 +9,32 @@ interface RewardsPanelProps {
 }
 
 const RewardsPanel = ({ userId }: RewardsPanelProps) => {
-  const [rewards, setRewards] = useState<any[]>([]);
+  const [rewards] = useState<any[]>([
+    {
+      id: '1',
+      incentive_type: 'First Purchase Bonus',
+      incentive_value: 250,
+      applied_at: '2024-11-15T10:30:00Z'
+    },
+    {
+      id: '2',
+      incentive_type: 'Referral Reward',
+      incentive_value: 500,
+      applied_at: '2024-11-10T14:20:00Z'
+    },
+    {
+      id: '3',
+      incentive_type: 'Festival Special',
+      incentive_value: 200,
+      applied_at: '2024-11-08T09:15:00Z'
+    },
+    {
+      id: '4',
+      incentive_type: 'Review Milestone',
+      incentive_value: 150,
+      applied_at: '2024-11-14T16:45:00Z'
+    }
+  ]);
   const [activeRules, setActiveRules] = useState<any[]>([]);
 
   useEffect(() => {
