@@ -84,7 +84,7 @@ export const CartSheet = () => {
                   <span>Total:</span>
                   <span>₹{totalPrice.toLocaleString()}</span>
                 </div>
-                <Button className="w-full" size="lg">
+                <Button className="w-full" size="lg" onClick={() => window.location.href = "/checkout"}>
                   Proceed to Checkout
                 </Button>
                 <Button variant="outline" className="w-full" onClick={clearCart}>
