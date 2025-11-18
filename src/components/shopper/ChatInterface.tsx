@@ -3,14 +3,17 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, Bot, User, Loader2, Check, CheckCheck, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
+type MessageStatus = 'sending' | 'sent' | 'delivered' | 'error';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  status?: MessageStatus;
 }
 
 interface ChatInterfaceProps {
@@ -21,6 +24,7 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [conversationId] = useState(() => crypto.randomUUID());
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -85,14 +89,29 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
       role: 'user',
       content: input.trim(),
       timestamp: new Date(),
+      status: 'sending',
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     setLoading(true);
 
+    // Update message status to sent
+    setMessages(prev => {
+      const updated = [...prev];
+      updated[updated.length - 1] = { ...updated[updated.length - 1], status: 'sent' };
+      return updated;
+    });
+
     // Save user message
     await saveMessage('user', userMessage.content);
+    
+    // Update to delivered
+    setMessages(prev => {
+      const updated = [...prev];
+      updated[updated.length - 1] = { ...updated[updated.length - 1], status: 'delivered' };
+      return updated;
+    });
 
     try {
       const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/coordinator-agent`;
@@ -120,6 +139,9 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
         throw new Error('Failed to start stream');
       }
 
+      // Show typing indicator
+      setIsTyping(true);
+
       // Handle streaming response
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -133,6 +155,10 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
         content: '',
         timestamp: new Date(),
       };
+      
+      // Wait a bit to show typing indicator
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setIsTyping(false);
       setMessages(prev => [...prev, assistantMessage]);
 
       while (!streamDone) {
@@ -203,10 +229,21 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
         variant: "destructive",
       });
       
-      // Remove both user and assistant messages if request failed
-      setMessages(prev => prev.slice(0, -2));
+      // Mark user message as error and remove assistant placeholder
+      setMessages(prev => {
+        const updated = [...prev];
+        if (updated.length >= 2 && updated[updated.length - 2].role === 'user') {
+          updated[updated.length - 2] = { ...updated[updated.length - 2], status: 'error' };
+        }
+        // Remove assistant placeholder if it exists
+        if (updated[updated.length - 1]?.role === 'assistant' && !updated[updated.length - 1].content) {
+          return updated.slice(0, -1);
+        }
+        return updated;
+      });
     } finally {
       setLoading(false);
+      setIsTyping(false);
     }
   };
 
@@ -238,9 +275,27 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
                 }`}
               >
                 <p className="text-sm">{message.content}</p>
-                <p className="text-xs opacity-70 mt-1">
-                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-xs opacity-70">
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                  {message.role === 'user' && message.status && (
+                    <span className="flex items-center">
+                      {message.status === 'sending' && (
+                        <Loader2 className="h-3 w-3 animate-spin opacity-70" />
+                      )}
+                      {message.status === 'sent' && (
+                        <Check className="h-3 w-3 opacity-70" />
+                      )}
+                      {message.status === 'delivered' && (
+                        <CheckCheck className="h-3 w-3 opacity-70" />
+                      )}
+                      {message.status === 'error' && (
+                        <AlertCircle className="h-3 w-3 text-destructive opacity-70" />
+                      )}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {message.role === 'user' && (
@@ -251,13 +306,17 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
             </div>
           ))}
 
-          {loading && (
-            <div className="flex gap-3">
+          {isTyping && (
+            <div className="flex gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
               <div className="bg-primary/10 p-2 rounded-full h-8 w-8 flex items-center justify-center">
                 <Bot className="h-4 w-4 text-primary" />
               </div>
               <div className="bg-muted p-3 rounded-lg">
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
               </div>
             </div>
           )}
