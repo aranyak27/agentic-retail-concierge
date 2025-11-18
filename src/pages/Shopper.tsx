@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { LogOut, MessageSquare, Sparkles, Video, Gift, ShoppingBag } from "lucide-react";
@@ -11,51 +10,10 @@ import VideoCommerce from "@/components/shopper/VideoCommerce";
 import RewardsPanel from "@/components/shopper/RewardsPanel";
 
 const Shopper = () => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Check auth status
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate('/auth?role=shopper');
-      } else {
-        setUser(session.user);
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/auth?role=shopper');
-      } else if (session) {
-        setUser(session.user);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: "Signed out",
-      description: "Come back soon!",
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // Demo mode - no authentication required
+  const demoUserId = 'demo-shopper-' + Date.now();
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,9 +30,9 @@ const Shopper = () => {
             </div>
           </div>
           
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
+            Back to Home
           </Button>
         </div>
       </header>
@@ -102,19 +60,19 @@ const Shopper = () => {
           </TabsList>
 
           <TabsContent value="chat" className="space-y-4">
-            <ChatInterface userId={user?.id} />
+            <ChatInterface userId={demoUserId} />
           </TabsContent>
 
           <TabsContent value="stylist" className="space-y-4">
-            <WardrobeManager userId={user?.id} />
+            <WardrobeManager userId={demoUserId} />
           </TabsContent>
 
           <TabsContent value="video" className="space-y-4">
-            <VideoCommerce userId={user?.id} />
+            <VideoCommerce userId={demoUserId} />
           </TabsContent>
 
           <TabsContent value="rewards" className="space-y-4">
-            <RewardsPanel userId={user?.id} />
+            <RewardsPanel userId={demoUserId} />
           </TabsContent>
         </Tabs>
       </div>

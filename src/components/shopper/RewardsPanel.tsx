@@ -13,20 +13,8 @@ const RewardsPanel = ({ userId }: RewardsPanelProps) => {
   const [activeRules, setActiveRules] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchRewards();
     fetchActiveRules();
   }, [userId]);
-
-  const fetchRewards = async () => {
-    const { data } = await supabase
-      .from('reward_events')
-      .select('*')
-      .eq('user_id', userId)
-      .order('applied_at', { ascending: false })
-      .limit(10);
-
-    if (data) setRewards(data);
-  };
 
   const fetchActiveRules = async () => {
     const { data } = await supabase
