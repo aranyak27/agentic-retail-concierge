@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { Separator } from "@/components/ui/separator";
+import { ReviewSection } from "@/components/reviews/ReviewSection";
 
 interface Product {
   id: string;
@@ -230,6 +231,11 @@ const ProductDetail = () => {
               </Button>
             </div>
           </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="max-w-6xl mx-auto mt-12">
+          <ReviewSection productId={product.id} />
         </div>
       </div>
     </div>

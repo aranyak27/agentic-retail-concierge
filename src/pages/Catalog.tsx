@@ -222,12 +222,18 @@ const Catalog = () => {
       <header className="sticky top-0 z-10 bg-card border-b shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" onClick={() => navigate("/")}>
+            <Button variant="ghost" onClick={() => navigate("/catalog")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
             <h1 className="text-2xl font-bold">Product Catalog</h1>
-            <CartSheet />
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate("/wishlist")}>
+                <Heart className="h-4 w-4 mr-2" />
+                Wishlist
+              </Button>
+              <CartSheet />
+            </div>
           </div>
 
           {/* Search Bar */}
