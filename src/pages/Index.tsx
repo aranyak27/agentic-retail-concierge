@@ -7,90 +7,96 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
-      {/* Navigation */}
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex justify-end">
-          <Button variant="outline" onClick={() => navigate('/catalog')}>
-            <Store className="h-4 w-4 mr-2" />
-            Browse Catalog
-          </Button>
-        </div>
-      </nav>
-
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/50">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto text-center animate-fade-in">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
-            <Sparkles className="h-4 w-4" />
-            <span className="text-sm font-medium">Agentic Commerce Platform</span>
+      <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="max-w-5xl mx-auto">
+          {/* Badge */}
+          <div className="flex justify-center mb-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-sm font-medium">AI-Powered Retail Platform</span>
+            </div>
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            Hyper-Autonomous Retail Concierge
+          {/* Main Heading */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-center mb-6 bg-gradient-to-r from-primary via-primary-glow to-secondary bg-clip-text text-transparent animate-fade-in">
+            The Future of Shopping
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Experience the future of retail with GPT-powered multi-agent AI that understands, anticipates, and executes—transforming shopping into intelligent conversations
+          <p className="text-lg md:text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto animate-fade-in">
+            Multi-agent AI that understands your style, manages inventory, and delivers personalized experiences
           </p>
 
-          {/* Key Features */}
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
-            <div className="bg-card p-6 rounded-lg border shadow-soft animate-slide-up">
-              <Bot className="h-10 w-10 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Multi-Agent AI</h3>
-              <p className="text-sm text-muted-foreground">
-                Coordinator, Stylist, Rewards, and Verification agents working together
-              </p>
-            </div>
-            
-            <div className="bg-card p-6 rounded-lg border shadow-soft animate-slide-up [animation-delay:100ms]">
-              <Sparkles className="h-10 w-10 text-secondary mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Real-Time Intelligence</h3>
-              <p className="text-sm text-muted-foreground">
-                Live inventory, dynamic rewards, and instant personalization
-              </p>
-            </div>
-            
-            <div className="bg-card p-6 rounded-lg border shadow-soft animate-slide-up [animation-delay:200ms]">
-              <BarChart3 className="h-10 w-10 text-accent mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Trusted Execution</h3>
-              <p className="text-sm text-muted-foreground">
-                Built-in verification, safety checks, and complete transparency
-              </p>
-            </div>
+          {/* Browse Products CTA */}
+          <div className="flex justify-center mb-20 animate-fade-in">
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-6 shadow-glow hover:shadow-elegant transition-all"
+              onClick={() => navigate('/catalog')}
+            >
+              <Store className="h-5 w-5 mr-2" />
+              Browse Products
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
 
-          {/* Persona Selection */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="p-8 hover:shadow-medium transition-all hover:-translate-y-1 cursor-pointer group" onClick={() => navigate('/shopper')}>
-              <ShoppingBag className="h-16 w-16 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h2 className="text-2xl font-bold mb-3">I'm a Shopper</h2>
-              <p className="text-muted-foreground mb-6">
-                Get AI-powered styling advice, video shopping experiences, and smart rewards tailored just for you
-              </p>
-              <Button className="w-full group-hover:bg-primary-glow">
-                Start Shopping <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+          {/* Persona Cards - Prominent */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <Card className="group relative overflow-hidden border-2 hover:border-primary transition-all duration-300 cursor-pointer animate-slide-up" onClick={() => navigate('/shopper')}>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative p-10">
+                <div className="mb-6">
+                  <ShoppingBag className="h-20 w-20 text-primary group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h2 className="text-3xl font-bold mb-4">Shopper</h2>
+                <p className="text-muted-foreground mb-8 text-base">
+                  AI styling assistant, virtual wardrobe, video shopping, and personalized rewards
+                </p>
+                <Button size="lg" className="w-full group-hover:shadow-medium transition-all">
+                  Start Shopping <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
             </Card>
 
-            <Card className="p-8 hover:shadow-medium transition-all hover:-translate-y-1 cursor-pointer group" onClick={() => navigate('/ops')}>
-              <BarChart3 className="h-16 w-16 text-secondary mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h2 className="text-2xl font-bold mb-3">I'm a Retail Manager</h2>
-              <p className="text-muted-foreground mb-6">
-                Configure AI agents, monitor CLV & AOV metrics, manage safety, and drive growth
-              </p>
-              <Button variant="secondary" className="w-full">
-                Access Dashboard <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+            <Card className="group relative overflow-hidden border-2 hover:border-secondary transition-all duration-300 cursor-pointer animate-slide-up [animation-delay:100ms]" onClick={() => navigate('/ops')}>
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative p-10">
+                <div className="mb-6">
+                  <BarChart3 className="h-20 w-20 text-secondary group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h2 className="text-3xl font-bold mb-4">Retail Manager</h2>
+                <p className="text-muted-foreground mb-8 text-base">
+                  Agent governance, analytics dashboard, experiments, and knowledge management
+                </p>
+                <Button size="lg" variant="secondary" className="w-full group-hover:shadow-medium transition-all">
+                  Access Dashboard <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
             </Card>
+          </div>
+
+          {/* Feature Pills - Simplified */}
+          <div className="flex flex-wrap justify-center gap-4 animate-fade-in">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border">
+              <Bot className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">Multi-Agent AI</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border">
+              <Sparkles className="h-4 w-4 text-secondary" />
+              <span className="text-sm font-medium">Real-Time Intelligence</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border">
+              <BarChart3 className="h-4 w-4 text-accent" />
+              <span className="text-sm font-medium">Trusted Execution</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="border-t mt-24">
-        <div className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
+      <div className="border-t mt-auto">
+        <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
           <p>Powered by Lovable AI • Built for India's Next-Gen Retail</p>
         </div>
       </div>
