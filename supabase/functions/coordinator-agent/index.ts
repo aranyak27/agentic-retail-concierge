@@ -14,6 +14,10 @@ serve(async (req) => {
     const { userId, message, conversationHistory } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY not configured");
+    }
+
     const systemPrompt = `You are a helpful AI retail concierge for an Indian e-commerce platform. 
 You help with:
 - Product recommendations and styling advice
@@ -22,7 +26,17 @@ You help with:
 - Wardrobe gap analysis
 
 Be conversational, helpful, and mention relevant Indian fashion trends when appropriate.
-answer in a clear concise and crisp manner, dont use paragraphs only bullet points, dont use "*".`;
+Keep responses clear, concise, and crisp. Use bullet points when appropriate but avoid asterisks.`;
+
+    // Build messages array, limiting history to last 10 messages to avoid context length issues
+    const recentHistory = conversationHistory.slice(-10);
+    const messages = [
+      { role: "system", content: systemPrompt },
+      ...recentHistory.map((m: any) => ({ role: m.role, content: m.content })),
+      { role: "user", content: message },
+    ];
+
+    console.log(`Sending ${messages.length} messages to AI Gateway`);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -32,20 +46,30 @@ answer in a clear concise and crisp manner, dont use paragraphs only bullet poin
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...conversationHistory.map((m: any) => ({ role: m.role, content: m.content })),
-          { role: "user", content: message },
-        ],
+        messages,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`AI Gateway error: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`AI Gateway error ${response.status}:`, errorText);
+      
+      // Handle specific error codes
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again in a moment.");
+      }
+      if (response.status === 402) {
+        throw new Error("Payment required. Please add credits to your workspace.");
+      }
+      throw new Error(`AI Gateway error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    const aiResponse = data.choices[0].message.content;
+    const aiResponse = data.choices?.[0]?.message?.content;
+    
+    if (!aiResponse) {
+      throw new Error("No response content from AI Gateway");
+    }
 
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

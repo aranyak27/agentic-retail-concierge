@@ -58,7 +58,14 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to get response');
+      }
+
+      if (!data?.response) {
+        throw new Error('No response received from AI');
+      }
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -69,11 +76,27 @@ const ChatInterface = ({ userId }: ChatInterfaceProps) => {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error: any) {
       console.error('Chat error:', error);
+      
+      // Show specific error message to user
+      let errorMessage = "Failed to get response from AI";
+      if (error.message) {
+        if (error.message.includes("Rate limit")) {
+          errorMessage = "Too many requests. Please wait a moment and try again.";
+        } else if (error.message.includes("Payment required")) {
+          errorMessage = "AI service requires credits. Please contact support.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to get response from AI",
+        description: errorMessage,
         variant: "destructive",
       });
+      
+      // Remove the user message if request failed
+      setMessages(prev => prev.slice(0, -1));
     } finally {
       setLoading(false);
     }
