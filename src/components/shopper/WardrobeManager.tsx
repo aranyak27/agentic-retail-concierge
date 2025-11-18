@@ -3,9 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Sparkles } from "lucide-react";
+import { Plus, Trash2, Sparkles, Shirt, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,6 +20,14 @@ interface WardrobeItem {
   category: string;
   color: string;
   season: string;
+}
+
+interface Outfit {
+  name: string;
+  items: string[];
+  occasion: string;
+  season: string;
+  description: string;
 }
 
 const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
@@ -67,6 +76,8 @@ const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
     }
   ]);
   const [loading, setLoading] = useState(false);
+  const [outfits, setOutfits] = useState<Outfit[]>([]);
+  const [generatingOutfits, setGeneratingOutfits] = useState(false);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -111,6 +122,60 @@ const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
     // Demo mode - remove from local state
     setItems(prev => prev.filter(item => item.id !== id));
     toast({ title: "Item removed" });
+  };
+
+  const generateOutfitSuggestions = async () => {
+    if (items.length < 2) {
+      toast({
+        title: "Not enough items",
+        description: "Add at least 2 items to generate outfit suggestions",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setGeneratingOutfits(true);
+    try {
+      const OUTFIT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/outfit-suggestions`;
+      
+      const response = await fetch(OUTFIT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          wardrobeItems: items,
+        }),
+      });
+
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+      }
+      if (response.status === 402) {
+        throw new Error("Payment required. Please add credits to your workspace.");
+      }
+      if (!response.ok) {
+        throw new Error('Failed to generate outfit suggestions');
+      }
+
+      const data = await response.json();
+      setOutfits(data.outfits);
+      
+      toast({
+        title: "Outfits Generated!",
+        description: `Created ${data.outfits.length} outfit suggestions for you`,
+      });
+    } catch (error: any) {
+      console.error('Outfit generation error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate outfit suggestions",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingOutfits(false);
+    }
   };
 
   return (
@@ -223,6 +288,77 @@ const WardrobeManager = ({ userId }: WardrobeManagerProps) => {
             ))
           )}
         </div>
+      </Card>
+
+      {/* AI Outfit Suggestions */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Shirt className="h-5 w-5 text-primary" />
+              AI Outfit Suggestions
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Get personalized outfit combinations from your wardrobe
+            </p>
+          </div>
+          <Button 
+            onClick={generateOutfitSuggestions} 
+            disabled={generatingOutfits || items.length < 2}
+          >
+            {generatingOutfits ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Generate Outfits
+              </>
+            )}
+          </Button>
+        </div>
+
+        {outfits.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <Shirt className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p className="mb-2">No outfit suggestions yet</p>
+            <p className="text-sm">
+              Click "Generate Outfits" to get AI-powered styling recommendations
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {outfits.map((outfit, idx) => (
+              <Card key={idx} className="p-4 bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="font-semibold text-lg mb-1">{outfit.name}</h4>
+                    <div className="flex gap-2 mb-2">
+                      <Badge variant="secondary">{outfit.occasion}</Badge>
+                      <Badge variant="outline">{outfit.season}</Badge>
+                    </div>
+                  </div>
+                  <Sparkles className="h-5 w-5 text-accent" />
+                </div>
+                
+                <p className="text-sm text-muted-foreground mb-3">{outfit.description}</p>
+                
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground uppercase">Items in this outfit:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {outfit.items.map((item, itemIdx) => (
+                      <Badge key={itemIdx} variant="default" className="text-xs">
+                        {item}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );

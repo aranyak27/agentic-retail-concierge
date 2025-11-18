@@ -2,3 +2,6 @@ project_id = "qkrlkeysxrrfcpjnfshw"
 
 [functions.coordinator-agent]
 verify_jwt = false
+
+[functions.outfit-suggestions]
+verify_jwt = false
