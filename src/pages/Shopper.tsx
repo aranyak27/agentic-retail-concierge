@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { LogOut, MessageSquare, Sparkles, Video, Gift, ShoppingBag } from "lucide-react";
+import { LogOut, MessageSquare, Sparkles, Video, Gift, ShoppingBag, Store } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ChatInterface from "@/components/shopper/ChatInterface";
 import WardrobeManager from "@/components/shopper/WardrobeManager";
@@ -24,16 +24,22 @@ const Shopper = () => {
             <div className="bg-primary/10 p-2 rounded-lg">
               <ShoppingBag className="h-6 w-6 text-primary" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold">Retail Concierge</h1>
-              <p className="text-sm text-muted-foreground">Your AI Shopping Assistant</p>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold">Retail Concierge</h1>
+            <p className="text-sm text-muted-foreground">Your AI Shopping Assistant</p>
           </div>
-          
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/catalog')}>
+            <Store className="h-4 w-4 mr-2" />
+            Browse Products
+          </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <LogOut className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
+        </div>
         </div>
       </header>
 

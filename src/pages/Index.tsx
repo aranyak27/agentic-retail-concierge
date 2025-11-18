@@ -1,4 +1,4 @@
-import { Bot, ShoppingBag, BarChart3, ArrowRight, Sparkles } from "lucide-react";
+import { Bot, ShoppingBag, BarChart3, ArrowRight, Sparkles, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +8,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
+      {/* Navigation */}
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex justify-end">
+          <Button variant="outline" onClick={() => navigate('/catalog')}>
+            <Store className="h-4 w-4 mr-2" />
+            Browse Catalog
+          </Button>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto text-center animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
             <Sparkles className="h-4 w-4" />
