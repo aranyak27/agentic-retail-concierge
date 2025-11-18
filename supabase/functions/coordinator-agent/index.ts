@@ -47,6 +47,7 @@ Keep responses clear, concise, and crisp. Use bullet points when appropriate but
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages,
+        stream: true,
       }),
     });
 
@@ -54,7 +55,6 @@ Keep responses clear, concise, and crisp. Use bullet points when appropriate but
       const errorText = await response.text();
       console.error(`AI Gateway error ${response.status}:`, errorText);
       
-      // Handle specific error codes
       if (response.status === 429) {
         throw new Error("Rate limit exceeded. Please try again in a moment.");
       }
@@ -64,15 +64,14 @@ Keep responses clear, concise, and crisp. Use bullet points when appropriate but
       throw new Error(`AI Gateway error: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
-    const aiResponse = data.choices?.[0]?.message?.content;
-    
-    if (!aiResponse) {
-      throw new Error("No response content from AI Gateway");
-    }
-
-    return new Response(JSON.stringify({ response: aiResponse }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Return the streaming response directly
+    return new Response(response.body, {
+      headers: { 
+        ...corsHeaders, 
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+      },
     });
   } catch (error) {
     console.error("Coordinator agent error:", error);
