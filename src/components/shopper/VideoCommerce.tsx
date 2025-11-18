@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Video, Search, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -91,8 +92,74 @@ const VideoCommerce = ({ userId }: VideoCommerceProps) => {
 
       <Card className="p-6">
         <h4 className="font-semibold mb-4">Recent Video Analyses</h4>
-        <div className="text-center py-8 text-muted-foreground">
-          <p>No video analyses yet. Try analyzing your first video!</p>
+        <div className="space-y-3">
+          <Card className="p-4 hover:shadow-medium transition-shadow">
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded">
+                <Video className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h5 className="font-medium mb-1">Casual Summer Look</h5>
+                <p className="text-sm text-muted-foreground mb-2">Instagram • 1,250 views • High engagement</p>
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="secondary">2 products found</Badge>
+                  <Badge variant="outline">White T-Shirt</Badge>
+                  <Badge variant="outline">Blue Jeans</Badge>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 hover:shadow-medium transition-shadow">
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded">
+                <Video className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h5 className="font-medium mb-1">Office Wear Styling</h5>
+                <p className="text-sm text-muted-foreground mb-2">YouTube • 3,400 views • Medium engagement</p>
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="secondary">3 products found</Badge>
+                  <Badge variant="outline">Black Blazer</Badge>
+                  <Badge variant="outline">White Shirt</Badge>
+                  <Badge variant="outline">Formal Trousers</Badge>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 hover:shadow-medium transition-shadow">
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded">
+                <Video className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h5 className="font-medium mb-1">Ethnic Festive Collection</h5>
+                <p className="text-sm text-muted-foreground mb-2">Instagram • 890 views • High engagement</p>
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="secondary">1 product found</Badge>
+                  <Badge variant="outline">Red Kurta</Badge>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 hover:shadow-medium transition-shadow">
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded">
+                <Video className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h5 className="font-medium mb-1">Street Style Trends</h5>
+                <p className="text-sm text-muted-foreground mb-2">TikTok • 2,100 views • Very High engagement</p>
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="secondary">2 products found</Badge>
+                  <Badge variant="outline">Leather Jacket</Badge>
+                  <Badge variant="outline">Sneakers</Badge>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
       </Card>
     </div>
