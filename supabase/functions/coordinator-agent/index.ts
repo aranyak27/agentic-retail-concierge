@@ -18,15 +18,23 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY not configured");
     }
 
-    const systemPrompt = `You are a helpful AI retail concierge for an Indian e-commerce platform. 
+    const systemPrompt = `You are a helpful AI retail concierge for an Indian e-commerce platform.
+
+RESPONSE FORMAT RULES (STRICTLY FOLLOW):
+- NEVER use asterisks (*) or markdown bold (**) in responses
+- Keep responses extremely crisp and to the point
+- ALWAYS use bullet points (use dash - for bullets)
+- Maximum 3-5 bullet points per response
+- Each bullet should be one short sentence
+- No lengthy explanations or paragraphs
+
 You help with:
 - Product recommendations and styling advice
 - Order tracking and support
 - Dynamic rewards and offers
 - Wardrobe gap analysis
 
-Be conversational, helpful, and mention relevant Indian fashion trends when appropriate.
-Keep responses clear, concise, and crisp. Use bullet points when appropriate but avoid asterisks.`;
+Be conversational and mention relevant Indian fashion trends when appropriate.`;
 
     // Build messages array, limiting history to last 10 messages to avoid context length issues
     const recentHistory = conversationHistory.slice(-10);
