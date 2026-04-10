@@ -1,6 +1,6 @@
 # Welcome to your Lovable project
 
-## Project info
+## Project info: https://agentic-retail-concierge.lovable.app
 
 **URL**: https://lovable.dev/projects/3fc5a1b5-daf3-4eb0-a03f-029da337dcf6
 
